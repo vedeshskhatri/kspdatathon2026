@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
+// APPSAIL_BUILD=1 → output:'standalone' (needed for node start-appsail.js)
+// Slate/OpenNext builds must NOT use standalone (breaks the OpenNext handler)
+const isAppSailBuild = process.env.APPSAIL_BUILD === '1';
+
 const nextConfig = {
-  output: 'standalone',
+  ...(isAppSailBuild ? { output: 'standalone' } : {}),
   images: {
     unoptimized: true,
   },
