@@ -427,31 +427,30 @@ A persistent intelligence beacon accessible across all three portals:
 
 | Technology | Version | Purpose |
 |:---|:---|:---|
-| **Zoho Catalyst** | Serverless | 16 AdvancedIO Node.js functions |
-| **Node.js** | 24.x | Catalyst function runtime |
-| **Gemini 2.5 Flash** | Latest | Agentic AI with 9-tool function calling |
-| **QuickML RAG** | Cloud | Primary vector retrieval over legal documents |
+| **Zoho Catalyst** | Serverless | 16 AdvancedIO Node.js 20 micro-functions |
+| **Zoho AppSail** | Container | Standalone Next.js 15 production server container (`start-appsail.js`) |
+| **Node.js** | 20.x | Catalyst function & AppSail runtime |
+| **QuickML RAG** | Cloud (GLM-4.7) | Primary vector retrieval over legal documents & police SOPs |
+| **Gemini 2.5 Flash** | Latest | Agentic AI with 9-tool autonomous function calling |
 | **Groq** | Llama 3.3 70B | Last-resort text fallback |
 | **Zia Translation** | Cloud | Kannada ↔ English translation |
 | **Catalyst ZCQL** | Cloud SQL | Crime database queries |
 | **Catalyst NoSQL** | Document DB | Conversation history per session |
 | **Axios** | 1.18 | HTTP client for inter-function calls |
 
-### Design System — "Mission Control Dark"
+### Design System — "Mission Control & Minimalist Authority"
 
 ```css
-/* The UI is built for dimly-lit control rooms */
-Background:    #030712 (near black)    → Authority
-Panels:        #0a0f1e (dark navy)     → Depth
-Borders:       #1e293b (subtle slate)  → Structure
-Text Primary:  #f1f5f9 (crisp white)   → Clarity
-Accent Blue:   #3b82f6                 → Information
-Accent Green:  #10b981                 → Success / Low urgency
-Accent Amber:  #f59e0b                 → Warning / Medium urgency
-Accent Red:    #ef4444                 → Critical / High urgency
+/* Typography Pairing */
+Headlines & KPIs:  Montserrat (bold/extrabold, geometric presence)
+Body & Descriptions: Google Sans / Plus Jakarta Sans (clean, ultra-legible)
+Data & Case IDs:   JetBrains Mono (tabular numerals, tamper hashes)
 
-Typography:    Inter (UI) + JetBrains Mono (data) + Space Grotesk (branding)
-Cards:         Glassmorphism — rgba(10,15,30,0.6) + backdrop-filter: blur(16px)
+/* Palette */
+Background:        #F5F7F7 (Clean Slate Canvas) / #030712 (Dark Mode Control Room)
+Brand Accents:     #0F5257 (Deep Teal) • #2E5FE0 (Royal Blue) • #C7362F (Oxblood)
+Status Badges:     Critical (#EF4444) • High (#F59E0B) • Cleared (#10B981)
+Cards:             Modular 2x2 & 3-Column balanced grids with subtle micro-borders
 ```
 
 ---
@@ -464,14 +463,14 @@ The crime database is a **synthetic dataset modeled on real Karnataka geography*
 
 | Dataset | Records | Key Fields |
 |:---|:---|:---|
-| **FIRs** | 3,000+ | Case number, district, crime type, date, description, status, coordinates |
+| **FIRs** | 3,000+ (5.35L Benchmark) | Case number, district, crime type, date, description, status, coordinates |
 | **Accused** | 2,000+ | Full name, age, gender, linked FIR numbers, criminal history |
 | **Victims** | 1,200+ | Demographics, vulnerability score, linked FIR numbers |
 | **FIR-Accused Links** | 2,500+ | Many-to-many case-person mapping |
 | **FIR-Victim Links** | 1,500+ | Many-to-many case-victim mapping |
 | **Cameras** | 1,500+ | ID, name, lat/lng, type (ANPR/CCTV/Face), installation date |
 | **ANPR Watchlist** | 800+ | Plate number, alert type, associated crime, vehicle description |
-| **Crime Types** | 20+ | Code, label, severity weight, IPC section mapping |
+| **Crime Types** | 20+ | Code, label, severity weight, IPC / BNS section mapping |
 | **Districts** | 31 | Name, population (Census 2011), area, headquarters |
 | **Police Stations** | 100+ | Name, district, lat/lng, jurisdiction area |
 
@@ -504,9 +503,10 @@ crime-database/
 ```
 kspdatathon2026/
 │
-├── functions/                          # ⚡ Zoho Catalyst Serverless Functions (16)
-│   ├── askDrishtiAI/                   #    Primary RAG + Gemini tool-calling AI (894 lines)
-│   │   └── index.js                   #    QuickML → Gemini (9 tools) → Groq → fallback
+├── functions/                          # ⚡ Zoho Catalyst Serverless Functions (16, node20)
+│   ├── askDrishtiAI/                   #    Primary RAG + QuickML + Gemini tool-calling AI
+│   │   ├── index.js                   #    QuickML RAG → Gemini 2.5 Flash (9 tools) → Groq
+│   │   └── catalyst-config.json       #    Stack: node20
 │   ├── firs/                          #    FIR database ZCQL search & filter
 │   ├── hotspots/                      #    Crime hotspot calculation & severity scoring
 │   ├── trends/                        #    Monthly incident trend aggregation
@@ -520,108 +520,67 @@ kspdatathon2026/
 │   ├── conversations/                 #    Chat history persistence (NoSQL)
 │   ├── drishtiVoice/                  #    Edge TTS voice synthesis
 │   ├── export-pdf/                    #    Case report PDF generation
-│   ├── chat/                          #    Legacy chat endpoint
+│   ├── chat/                          #    Conversational endpoint
 │   └── drishti_ksp_function/          #    Core utility function
 │
 ├── nextjs/                            # 🌐 Next.js 15 Web Application
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── page.tsx               #    Cinematic landing page (654 lines)
-│   │   │   ├── layout.js              #    Root layout + FOUC dark mode prevention
-│   │   │   ├── globals.css            #    Graphite & Oxblood design tokens (18KB)
-│   │   │   ├── api/                   #    20 API proxy routes
-│   │   │   │   ├── askDrishtiAI/      #    → /server/askDrishtiAI/
-│   │   │   │   ├── firs/              #    → /server/firs/
-│   │   │   │   ├── hotspots/          #    → /server/hotspots/
-│   │   │   │   ├── anpr-check/        #    → /server/anpr-check/
-│   │   │   │   ├── trail/             #    → /server/trail/
-│   │   │   │   ├── upload-fir/        #    FIR document upload
-│   │   │   │   ├── news/              #    Live news aggregation
-│   │   │   │   └── ...                #    (20 total proxy routes)
-│   │   │   └── dashboard/
-│   │   │       ├── layout.js          #    Dashboard shell (1148 lines) — sidebar,
-│   │   │       │                      #    orb, panel, voice, local intent detection
-│   │   │       ├── page.js            #    📊 Command Overview (41KB)
-│   │   │       ├── chat/page.js       #    💬 Co-Pilot Voice & Text Chat (67KB)
-│   │   │       ├── map/               #    🗺️ GIS Crime Density Heatmap
-│   │   │       ├── network/           #    🕸️ Organized Crime Network Graph
-│   │   │       │   ├── page.js        #       D3 force-directed visualization
-│   │   │       │   └── NetworkMapView.jsx
-│   │   │       ├── surveillance/      #    📹 ANPR/CCTV Surveillance Wall (49KB)
-│   │   │       ├── analytics/         #    📈 Crime Trends & Dark Zones (24KB)
-│   │   │       ├── trail/             #    📍 Geo-Trail Tracker
-│   │   │       │   ├── page.js        #       Vehicle movement reconstruction (68KB)
-│   │   │       │   └── TrailMapView.jsx
-│   │   │       ├── logs/              #    📋 AI Conversation Audit Logs
-│   │   │       ├── news/              #    📰 Live Crime News Feed
-│   │   │       ├── fir/[id]/          #    📄 FIR Case Dossier Detail
-│   │   │       └── suspect/[slug]/    #    👤 Suspect Intelligence Profile
+│   │   │   ├── page.tsx               #    Cinematic landing page
+│   │   │   ├── layout.js              #    Root layout + Google Fonts (Montserrat & Plus Jakarta)
+│   │   │   ├── globals.css            #    Design tokens, Google Fonts imports, HSL palette
+│   │   │   ├── api/                   #    API proxy routes (/api/askDrishtiAI, /api/firs, ...)
+│   │   │   │
+│   │   │   ├── dashboard/             # 👮 FIELD INSPECTOR COMMAND PORTAL
+│   │   │   │   ├── layout.js          #    Inspector shell with Voice Orb, quick switch & alert bell
+│   │   │   │   ├── page.js            #    📊 Tactical Dispatch Console with Supervisor Alert Banner
+│   │   │   │   ├── chat/page.js       #    💬 Voice & Multilingual Agentic Chat
+│   │   │   │   ├── map/               #    🗺️ GIS Crime Density Heatmap
+│   │   │   │   ├── network/           #    🕸️ D3 Force-Directed Crime Network Graph
+│   │   │   │   ├── surveillance/      #    📹 ANPR / CCTV Multi-Camera Surveillance Wall
+│   │   │   │   ├── analytics/         #    📈 Dark Zone Analytics & Time-Series Forecasting
+│   │   │   │   ├── trail/             #    📍 Vehicle Geo-Trail Reconstruction
+│   │   │   │   ├── logs/              #    📋 Audit Logs & Conversation History
+│   │   │   │   ├── fir/[...id]/       #    📄 FIR Case Dossier & Investigator Wall
+│   │   │   │   └── suspect/[slug]/    #    👤 Suspect Intelligence Dossier
+│   │   │   │
+│   │   │   ├── analyst/               # 🔬 CHIEF CRIME ANALYST PORTAL
+│   │   │   │   ├── layout.tsx         #    Analyst shell with Montserrat/Google Sans header
+│   │   │   │   ├── page.tsx           #    📊 Intelligence Overview (2x2 Modular Intel Matrix)
+│   │   │   │   ├── workbench/page.tsx #    🔬 6-Engine Specialized Crime Workbench
+│   │   │   │   ├── heatmap/page.tsx   #    🗺️ Spatio-Temporal Predictive Heatmap
+│   │   │   │   ├── network/page.tsx   #    🕸️ Cross-District Syndicate Link Graph
+│   │   │   │   ├── patterns/page.tsx  #    🧬 Pattern & MO Intelligence Matrix
+│   │   │   │   ├── reports/page.tsx   #    📑 Deep FIR Analytics & Ledgers
+│   │   │   │   ├── watchlist/page.tsx #    👥 Recidivism & Repeat Offender Tracking
+│   │   │   │   └── chat/page.tsx      #    💬 Analyst Co-Pilot Assistant
+│   │   │   │
+│   │   │   └── supervisor/            # 🛡️ COMMAND SUPERVISOR PORTAL
+│   │   │       ├── layout.tsx         #    Supervisor header with Live Readiness Telemetry
+│   │   │       ├── page.tsx           #    📊 Division Tactical Command Overview
+│   │   │       ├── assignment/page.tsx#    ⚡ AI Case Assignment & Workload Balancer
+│   │   │       ├── dispatch/page.tsx  #    🚓 Patrol Fleet Dispatch & Live Radar
+│   │   │       └── audit/page.tsx     #    📋 Officer Query Stream & Activity Logs
+│   │   │
 │   │   ├── components/
-│   │   │   ├── DrishtiOrb.jsx         #    🔮 Animated AI Orb (36KB) — 4 states
-│   │   │   ├── DrishtiPanel.jsx       #    💬 Slide-up Chat Panel (25KB)
-│   │   │   ├── DrishtiVoice.jsx       #    🎤 Voice Hook (23KB) — STT/TTS/Clap
-│   │   │   ├── DrishtiChat.jsx        #    Chat message rendering
-│   │   │   ├── ChronoCriminalGraph.tsx #    Timeline criminal activity graph
-│   │   │   ├── InvestigatorWall.tsx    #    Investigation board component (39KB)
-│   │   │   ├── AlertNotification.js   #    Real-time alert system
-│   │   │   ├── SystemStatusFooter.jsx  #    Live/Demo mode indicator
-│   │   │   ├── VoiceInput.tsx         #    Voice input UI component
-│   │   │   ├── VoiceDebugStatus.jsx   #    Development debug overlay
-│   │   │   ├── NewsCard.tsx           #    News article card
-│   │   │   ├── visualization/         #    8 dynamic visualization components
-│   │   │   │   ├── VisualizationRouter.js  # Renders correct viz by type
-│   │   │   │   ├── HeatmapCard.js     #    Leaflet heatmap
-│   │   │   │   ├── BarChartCard.js    #    Recharts bar chart
-│   │   │   │   ├── LineChartCard.js   #    Recharts line chart
-│   │   │   │   ├── NetworkGraphCard.js#    D3 network graph
-│   │   │   │   ├── MapPinsCard.js     #    Pin-based map view
-│   │   │   │   ├── GeoTrailCard.js    #    Trail map card
-│   │   │   │   └── TimelineCard.js    #    Event timeline
-│   │   │   ├── landing/              #    3 landing page preview components
-│   │   │   └── ui/                   #    7 reusable UI primitives
-│   │   │       ├── Card.js, Badge.js, Button.js, Spinner.js,
-│   │   │       ├── Skeleton.js, EmptyState.js
-│   │   │       └── index.js
+│   │   │   ├── QuickRoleSwitcher.tsx  #    🔄 Instant Role Switching (Inspector ↔ Analyst ↔ Supervisor)
+│   │   │   ├── AlertNotification.js   #    🚨 Universal Real-Time ANPR & Assignment Alert Dropdown
+│   │   │   ├── InvestigatorWall.tsx    #    📜 Official Police Gazette & Court-Admissible Dossier
+│   │   │   ├── DrishtiOrb.jsx         #    🔮 Animated AI Orb (4 reactive states)
+│   │   │   ├── DrishtiPanel.jsx       #    💬 Slide-up Chat Panel
+│   │   │   ├── DrishtiVoice.jsx       #    🎤 Voice Hook (STT/TTS + Clap Wake)
+│   │   │   ├── SystemStatusFooter.jsx #    🌐 Live / Demo Matrix Health Indicator
+│   │   │   └── visualization/         #    8 dynamic visualization routing components
 │   │   └── lib/
-│   │       ├── demo-data.js           #    56KB comprehensive fallback dataset
-│   │       ├── fetch-with-fallback.js  #    Resilient fetch wrapper
-│   │       ├── drishtiTrainingBase.js  #    24KB AI training/prompt data
-│   │       ├── catalyst-proxy.js      #    Catalyst API proxy
-│   │       ├── catalyst-adapter.js    #    Catalyst SDK adapter
-│   │       ├── zohoOAuth.js           #    OAuth token management
-│   │       ├── fir-store.js           #    FIR state management
-│   │       ├── uploadedFirsStore.js   #    Uploaded FIR persistence
-│   │       └── utils.js              #    Utility functions
-│   └── public/
-│       ├── videos/                    #    Sample surveillance clips
-│       └── sounds/                    #    UI sound effects
+│   │       ├── demo-data.js           #    56KB comprehensive Karnataka fallback dataset
+│   │       ├── fetch-with-fallback.js #    Zero-downtime fetch wrapper
+│   │       └── fir-store.js           #    State management & local storage sync
+│   │
+│   ├── start-appsail.js               # 🚀 Standalone AppSail container entrypoint
+│   └── app-service.json               # ⚙️ Zoho AppSail build configuration
 │
-├── crime-database/                    # 📊 Synthetic Crime Data Generation
-│   ├── raw-data/                      #    Source data (NCRB, Census, boundaries)
-│   ├── generated-csv/                 #    17 production CSV files (2.5MB+)
-│   └── generate_csvs.py              #    Data generation script
-│
-├── data-scripts/                      # 🔧 Camera data generation
-│   └── generate-cameras-csv.py        #    ANPR/CCTV camera placement script
-│
-├── camera-intel/                      # 📹 Camera Intelligence Module
-│   ├── components/                    #    CV pipeline components
-│   └── config/                        #    Camera configuration
-│
-├── docs/                             # 📚 Team Documentation (13 files)
-│   ├── DRISHTI_Person1_*.md          #    Captain / Project Lead guide
-│   ├── DRISHTI_Person2_*.md          #    AI Engine guide (this module)
-│   ├── DRISHTI_Person3_*.md          #    Data Analytics guide
-│   ├── DRISHTI_Person4_*.md          #    Camera Intelligence guide
-│   └── DRISHTI_Person5_*.md          #    UI/UX guide
-│
-├── DESIGN.md                         # 🎨 Complete Design System specification
-├── SCHEMA.md                         # 📐 AI Response JSON Schema (TypeScript)
-├── REQUIREMENTS.md                   # ✅ Functional & Non-Functional Requirements
-├── PRD.md                            # 📋 Product Requirements Document
-├── TECHSTACK.md                      # 🔧 Technology Stack rationale
-├── MEMORY.md                         # 🧠 Build decision log
-└── catalyst.json                     # ⚙️ Zoho Catalyst project config
+├── catalyst.json                      # ⚙️ Zoho Catalyst project config (Org ID: 60073715607)
+└── README.md                          # 📖 Super-detailed project documentation
 ```
 
 ---
@@ -632,10 +591,9 @@ kspdatathon2026/
 
 | Tool | Version | Purpose |
 |:---|:---|:---|
-| Node.js | 20+ (Next.js) / 24 (Catalyst) | Runtime |
+| Node.js | 20+ (Next.js & Catalyst) | Runtime |
 | npm | 10+ | Package management |
-| nvm | Latest | Node version switching |
-| Zoho Catalyst CLI | 1.27+ | *(Optional)* Local backend serving |
+| Zoho Catalyst CLI | 1.27+ | Local backend simulation & cloud deploy |
 
 ### 1. Clone & Install
 
@@ -649,53 +607,53 @@ npm install --legacy-peer-deps
 
 Create `nextjs/.env.local`:
 ```env
-# AI Configuration
+# AI & QuickML Configuration
+CATALYST_ORG_ID=60073715607
+QUICKML_OAUTH_TOKEN=your_quickml_oauth_token
 GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-2.5-flash
 
 # API Base URL
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
-
-# QuickML RAG (Optional — falls back to Gemini)
-QUICKML_RAG_URL=your_quickml_endpoint
-QUICKML_API_KEY=your_quickml_key
+NEXT_PUBLIC_API_BASE_URL=/api
 ```
 
-### 3. Run
+### 3. Run Locally
 
-#### Option A: Frontend Only (Demo Fallback Mode)
+#### Option A: Local Full Stack (Catalyst CLI + Next.js)
 ```bash
+# Terminal 1 — Catalyst Functions
+catalyst serve --only functions
+
+# Terminal 2 — Next.js Frontend
 cd nextjs
-npm run dev -- -p 3001
-# ✅ Full dashboard available at http://localhost:3001
-# 📊 All modules functional with rich Karnataka demo data
+npm run dev
+# → Live at http://localhost:3000
 ```
 
-#### Option B: Full Stack (Catalyst Backend + Next.js)
+#### Option B: Standalone Frontend (Auto-Fallback)
 ```bash
-# Terminal 1 — Backend (Node 24)
-nvm use 24
-catalyst serve
-# → 16 functions running at http://localhost:3000/server/
-
-# Terminal 2 — Frontend (Node 20)
-nvm use 20
 cd nextjs
-npm run dev -- -p 3001
-# → App running at http://localhost:3001 (hitting live backend)
+npm run dev
+# → Zero-config instant launch with 56KB Karnataka demo dataset
 ```
 
 ---
 
 ## ☁️ Deployment
 
-### Zoho Catalyst Cloud
-
+### 1. Zoho Catalyst Serverless Functions
 ```bash
 catalyst login
-catalyst deploy
-# → Deploys all 16 serverless functions + Next.js app
-# → Live URL: https://drishti-ksp-XXXXXXX.development.catalystserverless.in/app/
+catalyst deploy --only functions
+# → Deploys all 16 serverless Node.js 20 micro-functions
+```
+
+### 2. Zoho AppSail Container
+```bash
+# AppSail uses start-appsail.js and standalone Next.js build
+npm run build
+catalyst deploy --only app-service
+# → Deploys production container with zero cold-starts
 ```
 
 ---
