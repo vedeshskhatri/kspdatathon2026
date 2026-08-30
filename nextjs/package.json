@@ -8,9 +8,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/watch-and-patch.js & next build && node scripts/patch-zcatalyst-plugin.js",
-    "build:appsail": "node scripts/build-appsail.js",
-    "postbuild": "echo Build complete",
-    "start": "node start-appsail.js",
+    "postbuild": "node -e \"const fs = require('fs'); fs.rmSync('.next/cache', { recursive: true, force: true }); console.log('Cleaned .next/cache completely');\"",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -25,7 +24,6 @@
     "framer-motion": "^12.42.0",
     "gsap": "^3.15.0",
     "jspdf": "^4.2.1",
-    "kspdatathon2026": "file:..",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.25.0",
     "maplibre-gl": "^6.6.0",
