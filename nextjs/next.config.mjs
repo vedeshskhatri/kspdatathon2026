@@ -11,9 +11,13 @@ const CATALYST_FUNCTIONS_URL =
 
 const isProd = process.env.NODE_ENV === 'production';
 
+// APPSAIL_BUILD=1 → output:'standalone' for AppSail (node start-appsail.js)
+// Slate/OpenNext builds must NOT use standalone — it breaks the OpenNext handler
+const isAppSailBuild = process.env.APPSAIL_BUILD === '1';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  ...(isAppSailBuild ? { output: 'standalone' } : {}),
   transpilePackages: ['ogl'],
   images: {
     unoptimized: true,
