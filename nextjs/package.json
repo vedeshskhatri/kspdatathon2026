@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "node scripts/watch-and-patch.js & next build && node scripts/patch-zcatalyst-plugin.js",
     "build:appsail": "node scripts/build-appsail.js",
-    "postbuild": "node -e \"const fs = require('fs'); fs.rmSync('.next/cache', { recursive: true, force: true }); console.log('Cleaned .next/cache completely');\" && node scripts/sync-standalone-assets.js",
+    "postbuild": "node -e \"const fs = require('fs'); fs.rmSync('.next/cache', { recursive: true, force: true }); console.log('Cleaned .next/cache completely');\"",
     "start": "node start-appsail.js",
     "lint": "next lint"
   },
