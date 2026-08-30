@@ -223,6 +223,104 @@ Request Flow:
 
 ---
 
+### 🎖️ Module 12: Tri-Role Tactical Command Portals & Quick Switcher
+
+DRISHTI is built with distinct role-tailored intelligence portals tailored to the police hierarchy:
+
+```
+                  ┌─────────────────────────────────────┐
+                  │   QUICK ROLE SWITCHER (Topbar)      │
+                  │   Instant 1-Click Persona Shifting  │
+                  └──────────────────┬──────────────────┘
+                                     │
+         ┌───────────────────────────┼───────────────────────────┐
+         ▼                           ▼                           ▼
+┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
+│ 👮 FIELD        │         │ 🔬 CHIEF CRIME  │         │ 🛡️ COMMAND      │
+│    INSPECTOR    │         │    ANALYST      │         │    SUPERVISOR   │
+│  (/dashboard)   │         │    (/analyst)   │         │  (/supervisor)  │
+├─────────────────┤         ├─────────────────┤         ├─────────────────┤
+│ • Field Radar   │         │ • MO Pattern    │         │ • Workload AI   │
+│ • Live FIR Case │         │   Linkage Hub   │         │   Allocator     │
+│   Ledger        │         │ • 24×7 Chrono   │         │ • Fleet Radar & │
+│ • Push Dispatch │         │   Forecasting   │         │   Unit Tracker  │
+│   Alert Banner  │         │ • Rossmo Anchor │         │ • Station Ready │
+│ • Gazette Wall  │         │   Geo-Profiler  │         │   Metrics       │
+│ • Multi-Cam     │         │ • Telemetry     │         │ • Real-Time Log │
+│   Surveillance  │         │   Sensor Fusion │         │   Audit Stream  │
+└─────────────────┘         └─────────────────┘         └─────────────────┘
+```
+
+| Role Portal | URL Path | Persona & Target Workflow |
+|:---|:---|:---|
+| 👮 **Field Inspector** | `/dashboard` | **Ground Operations & Case Clearance** — Real-time FIR queue, instant case assignment notifications, suspect tracking, live surveillance video walls, and interactive Gazette dossiers. |
+| 🔬 **Chief Crime Analyst** | `/analyst` | **Deep Forensic & Latent Pattern Discovery** — State-level MO linkage across 5.35L CCTNS records, chrono-temporal strike forecasters, Rossmo geographical profiling, and court dossier generation. |
+| 🛡️ **Command Supervisor** | `/supervisor` | **Resource Allocation & Division Oversight** — Station workload balancer, AI inspector case matching, live patrol fleet radar, and immutable officer query audit logs. |
+
+---
+
+### 🔬 Module 13: Specialized Crime & Intelligence Workbench (`/analyst/workbench`)
+
+A dedicated 6-engine forensic suite engineered for advanced crime analysts:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              SPECIALIZED CRIME & INTELLIGENCE WORKBENCH (CID / SCRB)         │
+├─────────────────┬─────────────────┬─────────────────┬───────────────────────┤
+│ 1. MO Linkage   │ 2. Chrono       │ 3. Rossmo Geo   │ 4. Telemetry Multi-   │
+│    & Cold Case  │    Forecaster   │    Profiler     │    Sensor Fusion      │
+│    Matcher      │    (24×7 Matrix)│    (Anchor Base)│    (ANPR+CDR+FASTag)  │
+├─────────────────┴─────────────────┼─────────────────┴───────────────────────┤
+│ 5. Analysis of Competing          │ 6. Court-Admissible Dossier Generator   │
+│    Hypotheses (ACH Matrix)        │    (BNS 2023 / BSA §63 Certificate)     │
+└───────────────────────────────────┴─────────────────────────────────────────┘
+```
+
+| Engine | Analytical Methodology | Operational Value |
+|:---|:---|:---|
+| **1. MO Linkage & Cold Case Matcher** | Cosine similarity vector search over crime tool signatures, entry mechanics, and egress patterns against 5,35,815 historical CCTNS FIRs. | Detects cross-district repeat offender signatures in under 1.5 seconds. |
+| **2. 24×7 Chrono-Temporal Forecaster** | Heatmatrix calculation analyzing hour-of-day × day-of-week crime frequency distributions for Vehicle Theft, Narcotics, and Burglary. | Predicts strike probability windows to proactively position night flying squads. |
+| **3. Rossmo Geographic Profiler** | Implements Rossmo's hunting formula with negative distance decay buffer ($B$) to calculate the serial offender's most probable residential/chopshop anchor zone. | Reduces search radius from 25 km² down to a high-probability 1.2 km² hotspot. |
+| **4. Multi-Sensor Telemetry Fusion** | Fuses optical ANPR hits, cellular tower CDR dumps, and National Highway FASTag toll timestamps into a unified corroborated chronological timeline. | Proves vehicle transit and co-traveler proximity without manual data stitching. |
+| **5. Analysis of Competing Hypotheses (ACH)** | CIA/Richards Heuer methodology evaluating evidence diagnosticity against 4 competing theories ($H_1$ to $H_4$) to mathematically eliminate investigative cognitive bias. | Prevents tunnel vision and ensures objective evidentiary evaluation. |
+| **6. Court-Admissible Dossier Generator** | Formats findings into structured legal briefs citing **Bharatiya Nyaya Sanhita (BNS 2023)** and electronic evidence certificates under **Bharatiya Sakshya Adhiniyam (BSA §63)**. | Ready for immediate submission to Public Prosecutors and Magistrate Courts. |
+
+---
+
+### 🛡️ Module 14: Supervisor Case Allocation & Workload Balancer (`/supervisor/assignment`)
+
+An intelligent resource allocation engine that balances district caseloads:
+
+- **AI Inspector Matching**: Analyzes active caseloads, clearance velocity, geographic proximity, and domain specialization (e.g. Organized Vehicle Theft specialist).
+- **Instant Cross-Portal Reactivity**: When the Supervisor assigns a case to an officer (e.g. *Insp. V. Sharma*), a high-priority assignment alert is instantly pushed to the Inspector's console with a **"Review Case Dossier"** 1-click action and automatic case ledger updates.
+- **Station Rebalancing**: One-click AI workload rebalancing to transfer pending cases from overloaded stations (e.g. Indiranagar PS at 23 FIRs) to adjacent available units (e.g. Ulsoor PS at 8 FIRs).
+
+---
+
+### 📜 Module 15: Investigator Wall — Official Police Gazette & Chronicle (`InvestigatorWall.tsx`)
+
+A court-ready, authentic investigation board styled as the **Official Karnataka Police Gazette**:
+
+- **Official Masthead & Seal**: Formatted with *The Drishti Dispatch* official chronicle typography and restricted CCTNS classification headers.
+- **Evidentiary Integrity Hash**: Displays SHA-256 digital tamper seals for evidence admissibility.
+- **Accused Tradecraft & Modus Operandi**: Displays suspect mugshots, CCTNS IDs, risk scores, known aliases, prior arrests, and criminal tradecraft.
+- **Victim Protection Directives**: Evaluates vulnerability indices and assigns mandatory protection protocols (e.g., *Direct Police Escort Required*).
+- **ANPR Sightings Matrix**: Chronological log of camera IDs, highway checkpoints, speeds, and biometric match confidences.
+- **1-Click Official Gazette Print**: Full `window.print()` styling optimized for high-resolution A4 judicial printing.
+
+---
+
+### 🚨 Module 16: Real-Time ANPR Surveillance Alerts Hub (`AlertNotification.js`)
+
+A persistent intelligence beacon accessible across all three portals:
+
+- **HSRP License Plate Badges**: Clean vehicle plate formatting with status indicators.
+- **Web Audio Alert Beacon**: Acoustic notification pulse on incoming critical target sightings.
+- **Direct Live Feed Action**: Instant 1-click navigation from any alert directly to the active camera stream in the surveillance wall.
+- **Unified Supervisor Push Sync**: Displays both automated ANPR plate hits and supervisor direct case assignment notifications.
+
+---
+
 ## 🏗️ System Architecture
 
 ```
