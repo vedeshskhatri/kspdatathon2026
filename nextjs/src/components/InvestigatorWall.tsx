@@ -153,6 +153,17 @@ const getStatusColor = (status: string) => {
   return "bg-red-100 text-red-900 border-red-400";
 };
 
+const formatDateSafe = (dateStr?: string) => {
+  if (!dateStr) return new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  } catch {
+    return dateStr;
+  }
+};
+
 export default function InvestigatorWall({
   fir,
   accused,
@@ -162,12 +173,26 @@ export default function InvestigatorWall({
   isLoading = false,
 }: InvestigatorWallProps) {
   const [copied, setCopied] = useState(false);
-  const statusIdx = getStatusIndex(fir?.case_status || "");
+
+  // Normalize FIR object to guarantee all required fields exist
+  const safeFir: FIRDetails = {
+    case_number: fir?.case_number || "KAR/BLR/2026/04921",
+    crime_type: fir?.crime_type || "Vehicle Theft",
+    date_filed: fir?.date_filed || new Date().toISOString(),
+    location_name: fir?.location_name || (fir as any)?.police_station || "Silk Board TTMC Junction",
+    case_status: fir?.case_status || (fir as any)?.status || "under_investigation",
+    description: fir?.description || "Organized vehicle theft syndicate active in central sector.",
+    police_station: fir?.police_station || "Ashoknagar PS",
+    district_name: fir?.district_name || "Bengaluru Urban",
+    investigation_office: fir?.investigation_office || (fir as any)?.assigned_officer || "ACP Special Squad"
+  };
+
+  const statusIdx = getStatusIndex(safeFir.case_status);
   const today = new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" });
-  const rawCrimeType = (fir?.crime_type || "Vehicle Theft").replace(/_/g, " ");
+  const rawCrimeType = (safeFir.crime_type || "Vehicle Theft").replace(/_/g, " ");
 
   const handleCopyDossier = () => {
-    const text = `KARNATAKA STATE POLICE — DRISHTI INVESTIGATION CHRONICLE\nCase Docket: ${fir.case_number}\nCrime Category: ${rawCrimeType}\nPolice Station: ${fir.police_station}\nDate: ${fir.date_filed}\nStatus: ${fir.case_status}\nPrimary Accused: ${accused?.[0]?.full_name || 'Under Identification'}\nSummary: ${case_summary || fir.description}`;
+    const text = `KARNATAKA STATE POLICE — DRISHTI INVESTIGATION CHRONICLE\nCase Docket: ${safeFir.case_number}\nCrime Category: ${rawCrimeType}\nPolice Station: ${safeFir.police_station}\nDate: ${safeFir.date_filed}\nStatus: ${safeFir.case_status}\nPrimary Accused: ${accused?.[0]?.full_name || 'Under Identification'}\nSummary: ${case_summary || safeFir.description}`;
     if (typeof navigator !== 'undefined') {
       navigator.clipboard.writeText(text);
       setCopied(true);
@@ -206,8 +231,8 @@ export default function InvestigatorWall({
           alias: "Vicky Blade / Shadow Vicky",
           age: 38,
           gender: "Male",
-          address: `${fir.police_station || 'Whitefield Cyber Crime'} Jurisdiction, Bengaluru`,
-          district_name: fir.district_name || 'Bengaluru Urban',
+          address: `${safeFir.police_station || 'Whitefield Cyber Crime'} Jurisdiction, Bengaluru`,
+          district_name: safeFir.district_name || 'Bengaluru Urban',
           occupation: 'High-Value Financial Imposter / Tech Syndicate Fence',
           prior_convictions: 3,
           modus_operandi: 'Deploys spear-phishing tokens and electronic frequency jammers across cyber and transit hubs. Routes extortion assets via decentralized escrow nodes.',
@@ -223,7 +248,7 @@ export default function InvestigatorWall({
           age: 44,
           gender: "Male",
           occupation: "Vice President of Technology, Apex Cloud Solutions",
-          district_name: fir.district_name || "Bengaluru Urban",
+          district_name: safeFir.district_name || "Bengaluru Urban",
           vulnerability_score: 62
         }
       ];
@@ -253,7 +278,7 @@ export default function InvestigatorWall({
 
   // Camera sightings for ANPR section
   const mockSightings = [
-    { camera_id: "CAM-BLR-0045", location: `${fir.police_station || 'Silk Board Junction'} Corridor Approach`, time: "22-JUL-2026 14:10 IST", speed: "48 km/h", match: "KA-01-MJ-8821 (High Confidence 98.4%)" },
+    { camera_id: "CAM-BLR-0045", location: `${safeFir.police_station || 'Silk Board Junction'} Corridor Approach`, time: "22-JUL-2026 14:10 IST", speed: "48 km/h", match: "KA-01-MJ-8821 (High Confidence 98.4%)" },
     { camera_id: "CAM-WF-0082", location: "ITPB Main Road Tech Park Gate 2", time: "22-JUL-2026 12:05 IST", speed: "32 km/h", match: "KA-03-HA-8820 (Facial Match 92.1%)" },
     { camera_id: "CAM-MYS-0019", location: "Outer Ring Road Junction Checkpoint", time: "21-JUL-2026 23:45 IST", speed: "64 km/h", match: "Secondary Transit Node Detected" }
   ];
@@ -332,7 +357,7 @@ export default function InvestigatorWall({
           <div className="flex items-center gap-2">
             <span>Vol. XXVI · No. 2026</span>
             <span className="text-slate-400">·</span>
-            <span className="font-mono text-red-700 font-black">{fir.case_number}</span>
+            <span className="font-mono text-red-700 font-black">{safeFir.case_number}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -344,7 +369,7 @@ export default function InvestigatorWall({
 
           <div className="flex items-center gap-2">
             <span className="text-slate-500">Registration:</span>
-            <span>{new Date(fir.date_filed).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+            <span>{formatDateSafe(safeFir.date_filed)}</span>
           </div>
         </div>
       </div>
@@ -387,7 +412,7 @@ export default function InvestigatorWall({
           </div>
           <div>
             <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">Judicial Status</span>
-            <span className="text-xs font-black text-emerald-700 font-mono uppercase">{fir.case_status || 'OPEN'}</span>
+            <span className="text-xs font-black text-emerald-700 font-mono uppercase">{safeFir.case_status || 'OPEN'}</span>
           </div>
         </div>
       </div>
@@ -407,10 +432,10 @@ export default function InvestigatorWall({
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2.5 flex-wrap">
                 <span className="px-2.5 py-1 rounded text-[10px] font-mono font-black uppercase tracking-wider bg-slate-900 text-amber-300">
-                  {fir.case_number}
+                  {safeFir.case_number}
                 </span>
-                <span className={`px-2.5 py-1 rounded text-[10px] font-sans font-bold uppercase tracking-wider border ${getStatusColor(fir.case_status)}`}>
-                  {getStatusLabel(fir.case_status)}
+                <span className={`px-2.5 py-1 rounded text-[10px] font-sans font-bold uppercase tracking-wider border ${getStatusColor(safeFir.case_status)}`}>
+                  {getStatusLabel(safeFir.case_status)}
                 </span>
               </div>
               <span className="text-[10px] font-mono font-bold text-slate-400">
@@ -422,19 +447,19 @@ export default function InvestigatorWall({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-sans border-b border-slate-200 pb-3.5">
               <div>
                 <span className="text-[9px] text-slate-400 uppercase tracking-widest font-bold block mb-0.5">Registration Date</span>
-                <span className="font-semibold text-slate-800">{new Date(fir.date_filed).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" })}</span>
+                <span className="font-semibold text-slate-800">{formatDateSafe(safeFir.date_filed)}</span>
               </div>
               <div>
                 <span className="text-[9px] text-slate-400 uppercase tracking-widest font-bold block mb-0.5">Police Station</span>
-                <span className="font-semibold text-slate-800">{fir.police_station}</span>
+                <span className="font-semibold text-slate-800">{safeFir.police_station}</span>
               </div>
               <div>
                 <span className="text-[9px] text-slate-400 uppercase tracking-widest font-bold block mb-0.5">District Command</span>
-                <span className="font-semibold text-slate-800">{fir.district_name || 'Bengaluru Urban'}</span>
+                <span className="font-semibold text-slate-800">{safeFir.district_name || 'Bengaluru Urban'}</span>
               </div>
               <div>
                 <span className="text-[9px] text-slate-400 uppercase tracking-widest font-bold block mb-0.5">Incident Location</span>
-                <span className="font-semibold text-slate-800 truncate block">{fir.location_name}</span>
+                <span className="font-semibold text-slate-800 truncate block">{safeFir.location_name}</span>
               </div>
             </div>
 
@@ -445,14 +470,14 @@ export default function InvestigatorWall({
               </span>
               <div className="bg-[#FAF7F2] rounded-xl p-4 border border-slate-200/90 text-slate-800 text-xs sm:text-[13px] leading-relaxed font-sans space-y-2">
                 <p className="font-medium text-slate-900">
-                  {fir.description || 'Target offender syndicate engaged in organized criminal activities across district boundaries. Evidence synchronized via CCTNS database.'}
+                  {safeFir.description || 'Target offender syndicate engaged in organized criminal activities across district boundaries. Evidence synchronized via CCTNS database.'}
                 </p>
                 <div className="pt-2 border-t border-slate-200/70 flex flex-wrap items-center gap-3 text-[10px] text-slate-500 font-mono">
                   <span>📍 GPS: Lat 12.9860° N, Lng 77.7380° E</span>
                   <span>·</span>
                   <span>⚖️ Governing Acts: IPC §379, §420, BNS §303(2), IT Act §66D</span>
                   <span>·</span>
-                  <span>👮 Assigned IO: Insp. Priya Sharma (Badge #KSP-5120)</span>
+                  <span>👮 Assigned IO: {safeFir.investigation_office || 'ACP Special Squad'}</span>
                 </div>
               </div>
             </div>
@@ -466,7 +491,7 @@ export default function InvestigatorWall({
 
             <div className="flex flex-col gap-3 font-sans">
               {[
-                { title: "FIR Registered & Sealed", desc: `Lodged at ${fir.police_station} station.` },
+                { title: "FIR Registered & Sealed", desc: `Lodged at ${safeFir.police_station} station.` },
                 { title: "IO Assigned & Spot Panchanama", desc: "Digital evidence logged with SHA-256 hash." },
                 { title: "ANPR & Tower Triangulation", desc: "Vehicle geo-trail and cellular CDR synced." },
                 { title: "Judicial Chargesheet / Trial", desc: "Final report submitted to Magistrate Court." }
@@ -709,7 +734,7 @@ export default function InvestigatorWall({
               </span>
             </div>
             <p className="text-xs text-slate-700 leading-relaxed font-serif italic bg-emerald-50/50 p-3.5 rounded-lg border border-emerald-100">
-              {case_summary || `Official CCTNS Case Chronicle for ${fir.case_number}. Cross-district offender nexus identified. Multi-camera ANPR tracking activated along major Karnataka highway exit corridors.`}
+              {case_summary || `Official CCTNS Case Chronicle for ${safeFir.case_number}. Cross-district offender nexus identified. Multi-camera ANPR tracking activated along major Karnataka highway exit corridors.`}
             </p>
             <div className="flex items-center gap-3 text-[10px] text-slate-500 font-mono pt-1">
               <span>✓ Database Check: DONE</span>
