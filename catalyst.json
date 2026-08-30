@@ -5,7 +5,7 @@
       "source": "nextjs",
       "build_path": ".",
       "ignore": [
-        "**/node_modules/**",
+        "node_modules/**",
         "**/.git/**",
         "**/.cache/**",
         "**/*.log",
@@ -13,8 +13,8 @@
         "**/crime-database/**",
         "**/sample_firs/**",
         "**/*.zip",
-        "**/.next/cache/**",
-        "**/.next/trace"
+        ".next/cache/**",
+        ".next/trace"
       ]
     }
   ],
